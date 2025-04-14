@@ -1,13 +1,104 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { Button } from "@/components/ui/button";
+import { PageLayout } from "@/components/PageLayout";
+import { FeatureCard } from "@/components/FeatureCard";
+import { Brain, Utensils, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <PageLayout>
+      {/* Hero Section */}
+      <section className="relative py-20 md:py-32">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1532947974358-a218d18d8d14?q=80')] bg-cover bg-center opacity-10 blur-sm"></div>
+        
+        <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto px-4">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 animate-fade-in">
+            <span className="text-glow text-neon">Snap.</span> <span>Analyze.</span>{" "}
+            <span className="text-glow text-neon">Adjust.</span>{" "}
+            <span className="block mt-2">Live Light with AI.</span>
+          </h1>
+          
+          <p className="text-xl text-muted-foreground mb-10">
+            Discover if your meal fits your diet with just a photo.
+          </p>
+          
+          <Link to="/upload">
+            <Button className="text-background bg-neon hover:bg-neon/90 px-8 py-6 text-lg rounded-full animate-pulse-neon">
+              Get Started
+            </Button>
+          </Link>
+        </div>
+      </section>
+      
+      {/* Features Section */}
+      <section className="py-20 bg-muted/5 rounded-3xl my-20">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold mb-4">How FitSnap Works</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Our powerful AI analyzes your meals and provides personalized recommendations to help you achieve your fitness goals.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <FeatureCard
+            title="AI-powered meal analysis"
+            description="Our advanced AI recognizes food items and accurately estimates their nutritional content."
+            icon={Brain}
+          />
+          
+          <FeatureCard
+            title="Personalized nutrition suggestions"
+            description="Get tailored recommendations based on your specific dietary needs and goals."
+            icon={Utensils}
+          />
+          
+          <FeatureCard
+            title="Professional dietary support"
+            description="Access insights and advice from certified nutritionists and dieticians."
+            icon={Users}
+          />
+        </div>
+      </section>
+      
+      {/* CTA Section */}
+      <section className="relative py-16 mb-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-neon/5 to-transparent rounded-3xl"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 p-8">
+          <div className="max-w-lg">
+            <h2 className="text-3xl font-bold mb-4">Ready to transform your diet?</h2>
+            <p className="text-muted-foreground mb-6">
+              Start making smarter food choices today with FitSnap's AI-powered meal analysis.
+            </p>
+            
+            <Link to="/upload">
+              <Button className="text-background bg-neon hover:bg-neon/90">
+                Upload Your First Meal
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="w-full md:w-1/2 aspect-square md:aspect-video relative">
+            <img
+              src="https://images.unsplash.com/photo-1505253758473-96b7015fcd40?q=80"
+              alt="Person taking a photo of food"
+              className="rounded-xl object-cover h-full w-full shadow-lg animate-float"
+            />
+          </div>
+        </div>
+      </section>
+      
+      {/* Testimonial */}
+      <section className="py-16 mb-20 bg-card/40 rounded-3xl">
+        <div className="text-center max-w-3xl mx-auto px-4">
+          <p className="text-2xl font-light italic mb-6">
+            "FitSnap has completely changed my relationship with food. Now I make informed choices without obsessing over calories."
+          </p>
+          <p className="text-neon font-medium">— Sarah T., Lost 15 pounds in 3 months</p>
+        </div>
+      </section>
+    </PageLayout>
   );
 };
 
