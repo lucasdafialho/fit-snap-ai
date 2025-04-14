@@ -16,7 +16,8 @@ import {
   Trash2,
   ArrowRight,
   Sparkles,
-  Filter
+  Filter,
+  Upload
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -125,48 +126,50 @@ const UploadPage = () => {
           title="Analyze Your Meal"
           subtitle="Take a picture or upload an image of your food for AI nutritional analysis"
           align="center"
-          className="mb-8"
+          className="mb-8 pt-6 md:pt-8"
         />
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mx-auto">
+          <div className="space-y-6 w-full max-w-xl mx-auto lg:mx-0">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
               className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border p-6 hover:border-neon/20 transition-all duration-300"
             >
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="w-full grid grid-cols-3 mb-6 rounded-lg bg-background/50">
-                  <TabsTrigger value="camera" className="rounded-md flex items-center gap-2 data-[state=active]:bg-neon data-[state=active]:text-background">
+                  <TabsTrigger value="camera" className="rounded-md flex items-center justify-center gap-2 data-[state=active]:bg-neon data-[state=active]:text-background">
                     <Camera className="h-4 w-4" /> Capture
                   </TabsTrigger>
-                  <TabsTrigger value="recent" className="rounded-md flex items-center gap-2 data-[state=active]:bg-neon data-[state=active]:text-background">
+                  <TabsTrigger value="recent" className="rounded-md flex items-center justify-center gap-2 data-[state=active]:bg-neon data-[state=active]:text-background">
                     <History className="h-4 w-4" /> Recent
                   </TabsTrigger>
-                  <TabsTrigger value="stats" className="rounded-md flex items-center gap-2 data-[state=active]:bg-neon data-[state=active]:text-background">
+                  <TabsTrigger value="stats" className="rounded-md flex items-center justify-center gap-2 data-[state=active]:bg-neon data-[state=active]:text-background">
                     <BarChart3 className="h-4 w-4" /> Stats
                   </TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="camera">
-                  <ImageUploader
-                    onImageCapture={handleImageCapture}
-                    className="mb-6"
-                  />
-                  
-                  {file && !isAnalyzing && !results && (
-                    <Button
-                      onClick={handleAnalyzeClick}
-                      className="w-full bg-neon text-background hover:bg-neon/90 py-6 flex items-center justify-center gap-2 group"
-                    >
-                      <Sparkles className="h-5 w-5 group-hover:animate-pulse" />
-                      Analyze with AI
-                    </Button>
-                  )}
+                <TabsContent value="camera" className="focus-visible:outline-none focus-visible:ring-0">
+                  <div className="flex flex-col items-center">
+                    <ImageUploader
+                      onImageCapture={handleImageCapture}
+                      className="mb-6 w-full"
+                    />
+                    
+                    {file && !isAnalyzing && !results && (
+                      <Button
+                        onClick={handleAnalyzeClick}
+                        className="w-full bg-neon text-background hover:bg-neon/90 py-6 flex items-center justify-center gap-2 group"
+                      >
+                        <Sparkles className="h-5 w-5 group-hover:animate-pulse" />
+                        Analyze with AI
+                      </Button>
+                    )}
+                  </div>
                 </TabsContent>
                 
-                <TabsContent value="recent">
+                <TabsContent value="recent" className="focus-visible:outline-none focus-visible:ring-0">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-medium">Recent Analyses</h3>
@@ -236,7 +239,7 @@ const UploadPage = () => {
                   </div>
                 </TabsContent>
                 
-                <TabsContent value="stats">
+                <TabsContent value="stats" className="focus-visible:outline-none focus-visible:ring-0">
                   <div className="space-y-6 py-4">
                     {isAuthenticated ? (
                       <>
@@ -349,7 +352,7 @@ const UploadPage = () => {
             )}
           </div>
           
-          <div>
+          <div className="w-full max-w-xl mx-auto lg:mx-0">
             <NutritionResult
               isLoading={isAnalyzing}
               {...results}
