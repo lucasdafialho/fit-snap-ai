@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { toast } from "sonner";
 import { ArrowRight, Mail, Lock, User, UserCheck, Key } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AuthFormProps {
   className?: string;
@@ -16,8 +16,8 @@ interface AuthFormProps {
 
 export function AuthForm({ className }: AuthFormProps) {
   const [formType, setFormType] = useState<"login" | "register">("login");
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -35,23 +35,11 @@ export function AuthForm({ className }: AuthFormProps) {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      toast.success("Login successful!");
-      localStorage.setItem("user", JSON.stringify({
-        id: "user123",
-        name: "Demo User",
-        email: loginData.email,
-        profileImageUrl: "https://i.pravatar.cc/150?u=user123"
-      }));
-      navigate("/dashboard");
-    }, 1500);
+    await login(loginData.email, loginData.password);
+    navigate("/dashboard");
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (registerData.password !== registerData.confirmPassword) {
@@ -59,18 +47,11 @@ export function AuthForm({ className }: AuthFormProps) {
       return;
     }
 
-    setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      toast.success("Registration successful! Please login.");
-      setFormType("login");
-      setLoginData({
-        email: registerData.email,
-        password: registerData.password,
-      });
-    }, 1500);
+    setFormType("login");
+    setLoginData({
+      email: registerData.email,
+      password: registerData.password,
+    });
   };
 
   return (
@@ -82,10 +63,10 @@ export function AuthForm({ className }: AuthFormProps) {
         className="w-full"
       >
         <TabsList className="grid w-full grid-cols-2 mb-8">
-          <TabsTrigger value="login" disabled={isLoading}>
+          <TabsTrigger value="login">
             <UserCheck className="mr-2 h-4 w-4" /> Login
           </TabsTrigger>
-          <TabsTrigger value="register" disabled={isLoading}>
+          <TabsTrigger value="register">
             <User className="mr-2 h-4 w-4" /> Register
           </TabsTrigger>
         </TabsList>
@@ -105,7 +86,6 @@ export function AuthForm({ className }: AuthFormProps) {
                     id="email"
                     type="email"
                     placeholder="your.email@example.com"
-                    disabled={isLoading}
                     required
                     className="pl-10"
                     value={loginData.email}
@@ -127,7 +107,6 @@ export function AuthForm({ className }: AuthFormProps) {
                     id="password"
                     type="password"
                     placeholder="••••••••"
-                    disabled={isLoading}
                     required
                     className="pl-10"
                     value={loginData.password}
@@ -139,21 +118,10 @@ export function AuthForm({ className }: AuthFormProps) {
               <Button 
                 type="submit" 
                 className="w-full bg-neon text-background hover:bg-neon/90"
-                disabled={isLoading}
               >
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-background" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Logging in...
-                  </span>
-                ) : (
-                  <span className="flex items-center">
-                    Login <ArrowRight className="ml-2 h-4 w-4" />
-                  </span>
-                )}
+                <span className="flex items-center">
+                  Login <ArrowRight className="ml-2 h-4 w-4" />
+                </span>
               </Button>
             </form>
           </motion.div>
@@ -173,7 +141,6 @@ export function AuthForm({ className }: AuthFormProps) {
                   <Input
                     id="name"
                     placeholder="John Doe"
-                    disabled={isLoading}
                     required
                     className="pl-10"
                     value={registerData.name}
@@ -190,7 +157,6 @@ export function AuthForm({ className }: AuthFormProps) {
                     id="register-email"
                     type="email"
                     placeholder="your.email@example.com"
-                    disabled={isLoading}
                     required
                     className="pl-10"
                     value={registerData.email}
@@ -207,7 +173,6 @@ export function AuthForm({ className }: AuthFormProps) {
                     id="register-password"
                     type="password"
                     placeholder="••••••••"
-                    disabled={isLoading}
                     required
                     className="pl-10"
                     value={registerData.password}
@@ -224,7 +189,6 @@ export function AuthForm({ className }: AuthFormProps) {
                     id="confirm-password"
                     type="password"
                     placeholder="••••••••"
-                    disabled={isLoading}
                     required
                     className="pl-10"
                     value={registerData.confirmPassword}
@@ -236,21 +200,10 @@ export function AuthForm({ className }: AuthFormProps) {
               <Button 
                 type="submit" 
                 className="w-full bg-neon text-background hover:bg-neon/90"
-                disabled={isLoading}
               >
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-background" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Creating account...
-                  </span>
-                ) : (
-                  <span className="flex items-center">
-                    Create Account <ArrowRight className="ml-2 h-4 w-4" />
-                  </span>
-                )}
+                <span className="flex items-center">
+                  Create Account <ArrowRight className="ml-2 h-4 w-4" />
+                </span>
               </Button>
             </form>
           </motion.div>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 
 interface User {
@@ -37,23 +36,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     
-    // This is just a frontend simulation
-    // In a real app, you would make an API call here
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        const mockUser: User = {
-          id: "user123",
-          name: "Demo User",
-          email,
-          profileImageUrl: "https://i.pravatar.cc/150?u=user123"
-        };
-        
-        setUser(mockUser);
-        localStorage.setItem("user", JSON.stringify(mockUser));
-        setIsLoading(false);
-        resolve();
-      }, 1500);
-    });
+    // Create a mock user immediately
+    const mockUser: User = {
+      id: "user123",
+      name: "Demo User",
+      email,
+      profileImageUrl: "https://i.pravatar.cc/150?u=user123"
+    };
+    
+    // Set user in state and localStorage immediately
+    setUser(mockUser);
+    localStorage.setItem("user", JSON.stringify(mockUser));
+    setIsLoading(false);
+    return Promise.resolve();
   };
 
   const register = async (name: string, email: string, password: string) => {

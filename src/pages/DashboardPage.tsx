@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { PageLayout } from "@/components/PageLayout";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -31,7 +30,7 @@ const DashboardPage = () => {
       >
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <SectionHeading
-            title={`${greeting}, ${user?.name?.split(' ')[0] || 'User'}!`}
+            title={`${greeting}, ${user?.name?.split(' ')[0] || 'Friend'}!`}
             subtitle="Track your nutrition journey"
             align="left"
             className="mb-0"
