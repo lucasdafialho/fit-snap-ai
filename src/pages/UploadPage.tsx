@@ -123,7 +123,7 @@ const UploadPage = () => {
           className="mb-8 pt-6 md:pt-8 w-full max-w-4xl"
         />
         
-        <div className="w-full max-w-4xl ml-[300px] md:ml-[400px] lg:ml-[500px]">
+        <div className="w-full max-w-4xl ml-[270px] md:ml-[370px] lg:ml-[460px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="w-full">
               <motion.div
