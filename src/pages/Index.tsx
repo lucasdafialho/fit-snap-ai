@@ -2,62 +2,136 @@
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
 import { FeatureCard } from "@/components/FeatureCard";
-import { Brain, Utensils, Users } from "lucide-react";
+import { Brain, Utensils, Users, Camera, ArrowRight, Sparkles, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Index = () => {
   return (
     <PageLayout>
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32">
+      <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1532947974358-a218d18d8d14?q=80')] bg-cover bg-center opacity-10 blur-sm"></div>
         
-        <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto px-4">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 animate-fade-in">
-            <span className="text-glow text-neon">Snap.</span> <span>Analyze.</span>{" "}
-            <span className="text-glow text-neon">Adjust.</span>{" "}
-            <span className="block mt-2">Live Light with AI.</span>
-          </h1>
+        <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto px-4">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-6xl font-bold tracking-tight mb-6"
+          >
+            <span className="text-glow text-neon">Snap.</span>{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">Analyze.</span>{" "}
+            <span className="text-glow text-neon">Adjust.</span>
+            <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+              Live Light with AI
+            </span>
+          </motion.h1>
           
-          <p className="text-xl text-muted-foreground mb-10">
-            Discover if your meal fits your diet with just a photo.
-          </p>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-xl text-muted-foreground mb-10 max-w-2xl"
+          >
+            Transform your eating habits with AI-powered meal analysis. Take a photo, get instant nutritional insights, and receive personalized recommendations from certified professionals.
+          </motion.p>
           
-          <Link to="/upload">
-            <Button className="text-background bg-neon hover:bg-neon/90 px-8 py-6 text-lg rounded-full animate-pulse-neon">
-              Get Started
-            </Button>
-          </Link>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+          >
+            <Link to="/upload">
+              <Button className="text-background bg-neon hover:bg-neon/90 px-8 py-6 text-lg rounded-full animate-pulse-neon group">
+                Get Started
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+          </motion.div>
         </div>
       </section>
       
+      {/* Stats Section */}
+      <section className="py-12 bg-muted/5 rounded-3xl mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto px-4">
+          <div className="text-center">
+            <h3 className="text-4xl font-bold text-neon mb-2">98%</h3>
+            <p className="text-muted-foreground">Accuracy Rate</p>
+          </div>
+          <div className="text-center">
+            <h3 className="text-4xl font-bold text-neon mb-2">10K+</h3>
+            <p className="text-muted-foreground">Active Users</p>
+          </div>
+          <div className="text-center">
+            <h3 className="text-4xl font-bold text-neon mb-2">50+</h3>
+            <p className="text-muted-foreground">Expert Nutritionists</p>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20 bg-muted/5 rounded-3xl my-20">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">How FitSnap Works</h2>
+          <span className="text-neon font-medium mb-4 inline-block">WHY CHOOSE FITSNAP</span>
+          <h2 className="text-3xl font-bold mb-4">Transform Your Diet with AI</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Our powerful AI analyzes your meals and provides personalized recommendations to help you achieve your fitness goals.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
           <FeatureCard
             title="AI-powered meal analysis"
-            description="Our advanced AI recognizes food items and accurately estimates their nutritional content."
+            description="Our advanced AI recognizes food items and accurately estimates their nutritional content in seconds."
             icon={Brain}
           />
           
           <FeatureCard
             title="Personalized nutrition suggestions"
-            description="Get tailored recommendations based on your specific dietary needs and goals."
+            description="Get tailored recommendations based on your specific dietary needs and fitness goals."
             icon={Utensils}
           />
           
           <FeatureCard
             title="Professional dietary support"
-            description="Access insights and advice from certified nutritionists and dieticians."
+            description="Access insights and advice from certified nutritionists and dieticians when you need it."
             icon={Users}
           />
+        </div>
+      </section>
+      
+      {/* How It Works Section */}
+      <section className="py-20 my-20">
+        <div className="text-center mb-16">
+          <span className="text-neon font-medium mb-4 inline-block">HOW IT WORKS</span>
+          <h2 className="text-3xl font-bold mb-4">Simple as 1-2-3</h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+          <div className="text-center group">
+            <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-neon/10 group-hover:bg-neon/20 transition-colors">
+              <Camera className="h-8 w-8 text-neon" />
+            </div>
+            <h3 className="text-xl font-medium mb-2">Take a Photo</h3>
+            <p className="text-muted-foreground">Snap a picture of your meal or upload an existing one.</p>
+          </div>
+          
+          <div className="text-center group">
+            <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-neon/10 group-hover:bg-neon/20 transition-colors">
+              <Sparkles className="h-8 w-8 text-neon" />
+            </div>
+            <h3 className="text-xl font-medium mb-2">AI Analysis</h3>
+            <p className="text-muted-foreground">Our AI instantly analyzes the nutritional content.</p>
+          </div>
+          
+          <div className="text-center group">
+            <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-neon/10 group-hover:bg-neon/20 transition-colors">
+              <Trophy className="h-8 w-8 text-neon" />
+            </div>
+            <h3 className="text-xl font-medium mb-2">Get Results</h3>
+            <p className="text-muted-foreground">Receive personalized recommendations and insights.</p>
+          </div>
         </div>
       </section>
       
@@ -73,8 +147,9 @@ const Index = () => {
             </p>
             
             <Link to="/upload">
-              <Button className="text-background bg-neon hover:bg-neon/90">
+              <Button className="text-background bg-neon hover:bg-neon/90 group">
                 Upload Your First Meal
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
@@ -89,7 +164,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Testimonial */}
+      {/* Testimonial Section */}
       <section className="py-16 mb-20 bg-card/40 rounded-3xl">
         <div className="text-center max-w-3xl mx-auto px-4">
           <p className="text-2xl font-light italic mb-6">
