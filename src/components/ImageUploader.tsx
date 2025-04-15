@@ -1,7 +1,6 @@
-
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Camera, Upload, X } from "lucide-react";
+import { Camera, Upload, X, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ImageUploaderProps {
@@ -12,7 +11,20 @@ interface ImageUploaderProps {
 export function ImageUploader({ onImageCapture, className }: ImageUploaderProps) {
   const [dragActive, setDragActive] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  // Limpar o stream quando o componente for desmontado
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -46,19 +58,51 @@ export function ImageUploader({ onImageCapture, className }: ImageUploaderProps)
 
   const takePicture = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
       
-      // In a real app, we would implement camera functionality here
-      // This is just a placeholder to show the design
-      alert("Camera functionality would open here");
-      
-      // Clean up
-      stream.getTracks().forEach(track => track.stop());
-      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        streamRef.current = stream;
+        setIsCameraActive(true);
+      }
     } catch (err) {
-      console.error("Error accessing camera:", err);
-      alert("Could not access camera. Please check permissions.");
+      console.error("Erro ao acessar câmera:", err);
+      alert("Não foi possível acessar a câmera. Verifique as permissões.");
     }
+  };
+
+  const capturePicture = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      
+      // Configurar o canvas com as dimensões do vídeo
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Desenhar o quadro atual do vídeo no canvas
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Converter para blob
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], `food-snap-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          processFile(file);
+          stopCamera();
+        }
+      }, 'image/jpeg', 0.95);
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraActive(false);
   };
 
   const processFile = (file: File) => {
@@ -70,7 +114,7 @@ export function ImageUploader({ onImageCapture, className }: ImageUploaderProps)
       };
       reader.readAsDataURL(file);
     } else {
-      alert("Please upload an image file");
+      alert("Por favor, envie um arquivo de imagem");
     }
   };
 
@@ -78,6 +122,56 @@ export function ImageUploader({ onImageCapture, className }: ImageUploaderProps)
     setPreviewImage(null);
     if (inputRef.current) inputRef.current.value = "";
   };
+
+  // Renderização condicional baseada no estado
+  if (isCameraActive) {
+    return (
+      <div className={cn("relative w-full", className)}>
+        <video 
+          ref={videoRef} 
+          autoPlay 
+          playsInline
+          className="w-full h-auto rounded-2xl border border-border"
+        />
+        <canvas ref={canvasRef} className="hidden" />
+        
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
+          <Button 
+            onClick={stopCamera} 
+            variant="destructive"
+            size="icon"
+            className="rounded-full w-12 h-12"
+          >
+            <X className="h-6 w-6" />
+          </Button>
+          
+          <Button 
+            onClick={capturePicture} 
+            className="bg-neon text-background hover:bg-neon/90 rounded-full w-16 h-16 flex items-center justify-center"
+          >
+            <div className="w-12 h-12 rounded-full border-4 border-background flex items-center justify-center">
+              <div className="w-10 h-10 bg-neon rounded-full"></div>
+            </div>
+          </Button>
+          
+          <Button 
+            onClick={() => {
+              if (streamRef.current) {
+                // Alternar entre câmeras frontal e traseira
+                stopCamera();
+                setTimeout(() => takePicture(), 300);
+              }
+            }} 
+            variant="secondary"
+            size="icon"
+            className="rounded-full w-12 h-12"
+          >
+            <RefreshCw className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("w-full", className)}>
@@ -105,9 +199,9 @@ export function ImageUploader({ onImageCapture, className }: ImageUploaderProps)
               <Upload className="h-10 w-10 text-neon" />
             </div>
             <div className="space-y-1">
-              <p className="text-xl font-medium">Drop your food image here</p>
+              <p className="text-xl font-medium">Arraste sua imagem aqui</p>
               <p className="text-sm text-muted-foreground">
-                Or click to browse from your device
+                Ou clique para escolher do seu dispositivo
               </p>
             </div>
           </div>
@@ -117,14 +211,14 @@ export function ImageUploader({ onImageCapture, className }: ImageUploaderProps)
               onClick={handleButtonClick} 
               className="bg-neon text-background hover:bg-neon/90"
             >
-              <Upload className="mr-2 h-4 w-4" /> Browse Files
+              <Upload className="mr-2 h-4 w-4" /> Escolher Arquivo
             </Button>
             <Button 
               variant="outline" 
               className="border-neon text-neon hover:bg-neon/10"
               onClick={takePicture}
             >
-              <Camera className="mr-2 h-4 w-4" /> Take Picture
+              <Camera className="mr-2 h-4 w-4" /> Tirar Foto
             </Button>
           </div>
         </div>

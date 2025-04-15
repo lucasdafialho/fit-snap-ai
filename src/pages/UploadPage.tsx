@@ -21,6 +21,8 @@ import {
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { analyzeFoodImage, NutritionAnalysisResult } from "@/lib/gemini-api";
+import { toast } from "@/components/ui/use-toast";
 
 const UploadPage = () => {
   const { isAuthenticated } = useAuth();
@@ -33,84 +35,79 @@ const UploadPage = () => {
     { id: 3, url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=480&auto=format&fit=crop", name: "Colorful Salad", date: "May 12" },
     { id: 4, url: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=480&auto=format&fit=crop", name: "Grilled Salmon", date: "May 10" }
   ]);
-  const [results, setResults] = useState<{
-    calories: number;
-    carbs: number;
-    protein: number;
-    fats: number;
-    fitsInDiet: boolean;
-    mealName?: string;
-    ingredients?: string[];
-    alternatives?: {original: string, replacement: string}[];
-  } | null>(null);
+  const [results, setResults] = useState<NutritionAnalysisResult | null>(null);
 
   const handleImageCapture = (capturedFile: File) => {
     setFile(capturedFile);
     setResults(null);
   };
 
-  const handleAnalyzeClick = () => {
+  const handleAnalyzeClick = async () => {
     if (!file) return;
     
     setIsAnalyzing(true);
     
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // Mock response with enhanced data
-      const fitsDiet = Math.random() > 0.5; // Randomly determine fit
+    try {
+      const analysisResult = await analyzeFoodImage(file);
+      setResults(analysisResult);
       
-      setResults({
-        calories: 450,
-        carbs: 35,
-        protein: 22,
-        fats: 15,
-        fitsInDiet: fitsDiet,
-        mealName: "Grilled Chicken Salad",
-        ingredients: [
-          "Grilled Chicken Breast",
-          "Mixed Greens",
-          "Cherry Tomatoes",
-          "Cucumber",
-          "Olive Oil Dressing",
-          "Croutons"
-        ],
-        alternatives: fitsDiet ? undefined : [
-          {original: "Croutons", replacement: "Toasted Almonds"},
-          {original: "Olive Oil Dressing", replacement: "Lemon Juice"}
-        ]
+      const newRecentImage = {
+        id: Date.now(),
+        url: URL.createObjectURL(file),
+        name: analysisResult.mealName,
+        date: "Agora"
+      };
+      
+      setRecentImages([newRecentImage, ...recentImages.slice(0, 3)]);
+      
+    } catch (error) {
+      console.error("Failed to analyze image:", error);
+      toast({
+        title: "Erro na análise",
+        description: "Não foi possível analisar a imagem. Tente novamente.",
+        variant: "destructive"
       });
-      
+    } finally {
       setIsAnalyzing(false);
-    }, 3000);
+    }
   };
   
   const handleDeleteRecent = (id: number) => {
     setRecentImages(recentImages.filter(img => img.id !== id));
   };
   
-  const handleSelectRecent = (image: typeof recentImages[0]) => {
-    // In a real app, we would fetch the file or use the URL
-    // Here we'll simulate it by setting isAnalyzing to true
+  const handleSelectRecent = async (image: typeof recentImages[0]) => {
     setIsAnalyzing(true);
     setFile(null);
     
-    setTimeout(() => {
-      // Mock response for recent image
-      setResults({
-        calories: 520,
-        carbs: 42,
-        protein: 28,
-        fats: 18,
-        fitsInDiet: true,
-        mealName: image.name,
-        ingredients: [
-          "Mixed Ingredients",
-          "Based on History"
-        ]
-      });
+    try {
+      setTimeout(() => {
+        setResults({
+          calories: 520,
+          carbs: 42,
+          protein: 28,
+          fats: 18,
+          fitsInDiet: true,
+          mealName: image.name,
+          ingredients: [
+            "Ingrediente principal",
+            "Acompanhamento",
+            "Temperos"
+          ]
+        });
+        
+        setIsAnalyzing(false);
+      }, 1000);
       
+    } catch (error) {
+      console.error("Failed to retrieve analysis:", error);
+      toast({
+        title: "Erro ao recuperar dados",
+        description: "Não foi possível recuperar a análise anterior.",
+        variant: "destructive"
+      });
       setIsAnalyzing(false);
-    }, 2000);
+    }
   };
 
   return (
