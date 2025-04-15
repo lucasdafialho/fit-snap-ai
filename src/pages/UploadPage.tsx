@@ -48,9 +48,11 @@ const UploadPage = () => {
     setIsAnalyzing(true);
     
     try {
+      // Usar a API do Gemini para analisar a imagem
       const analysisResult = await analyzeFoodImage(file);
       setResults(analysisResult);
       
+      // Adicionar à lista de imagens recentes (em uma aplicação real, isso seria persistido)
       const newRecentImage = {
         id: Date.now(),
         url: URL.createObjectURL(file),
@@ -81,6 +83,8 @@ const UploadPage = () => {
     setFile(null);
     
     try {
+      // Em uma aplicação real, buscaríamos dados salvos ou reanalisaríamos a imagem
+      // Aqui, vamos simular com dados mockados
       setTimeout(() => {
         setResults({
           calories: 520,
