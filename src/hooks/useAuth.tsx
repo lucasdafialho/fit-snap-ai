@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Create a mock user immediately
     const mockUser: User = {
       id: "user123",
-      name: "Demo User",
+      name: "Lucas",
       email,
       profileImageUrl: "https://i.pravatar.cc/150?u=user123"
     };
