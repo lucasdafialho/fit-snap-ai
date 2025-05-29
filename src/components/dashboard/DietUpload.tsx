@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, Plus } from "lucide-react";
+import { Upload, Plus, File, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface DietUploadProps {
@@ -16,23 +16,63 @@ interface DietUploadProps {
 export function DietUpload({ onUpload }: DietUploadProps) {
   const [patientName, setPatientName] = useState("");
   const [category, setCategory] = useState("");
-  const [calories, setCalories] = useState("");
-  const [protein, setProtein] = useState("");
-  const [carbs, setCarbs] = useState("");
-  const [fats, setFats] = useState("");
   const [notes, setNotes] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragOver(false);
+    
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      // Verificar se o arquivo é um tipo válido
+      const validTypes = ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (validTypes.includes(file.type) || file.name.endsWith('.txt')) {
+        setSelectedFile(file);
+      } else {
+        toast.error("Tipo de arquivo não suportado. Use PDF, TXT ou DOC.");
+      }
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const removeFile = () => {
+    setSelectedFile(null);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!selectedFile) {
+      toast.error("Por favor, selecione um arquivo com a dieta.");
+      return;
+    }
+
     const dietData = {
       patientName,
       category,
-      calories: Number(calories),
-      protein: Number(protein),
-      carbs: Number(carbs),
-      fats: Number(fats),
       notes,
+      file: selectedFile,
+      fileName: selectedFile.name,
+      fileSize: selectedFile.size,
+      fileType: selectedFile.type,
       date: new Date().toISOString(),
       nutritionist: "Dr. Sarah Chen"
     };
@@ -42,13 +82,18 @@ export function DietUpload({ onUpload }: DietUploadProps) {
     // Reset form
     setPatientName("");
     setCategory("");
-    setCalories("");
-    setProtein("");
-    setCarbs("");
-    setFats("");
     setNotes("");
+    setSelectedFile(null);
     
     toast.success("Dieta registrada com sucesso!");
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
@@ -60,7 +105,7 @@ export function DietUpload({ onUpload }: DietUploadProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="patientName">Nome do Paciente</Label>
@@ -87,50 +132,71 @@ export function DietUpload({ onUpload }: DietUploadProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <Label htmlFor="calories">Calorias</Label>
-              <Input
-                id="calories"
-                type="number"
-                value={calories}
-                onChange={(e) => setCalories(e.target.value)}
-                required
-              />
-            </div>
+          {/* File Upload Area */}
+          <div className="space-y-4">
+            <Label>Arquivo da Dieta</Label>
             
-            <div>
-              <Label htmlFor="protein">Proteínas (g)</Label>
-              <Input
-                id="protein"
-                type="number"
-                value={protein}
-                onChange={(e) => setProtein(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="carbs">Carboidratos (g)</Label>
-              <Input
-                id="carbs"
-                type="number"
-                value={carbs}
-                onChange={(e) => setCarbs(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="fats">Gorduras (g)</Label>
-              <Input
-                id="fats"
-                type="number"
-                value={fats}
-                onChange={(e) => setFats(e.target.value)}
-                required
-              />
-            </div>
+            {!selectedFile ? (
+              <div
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                  isDragOver 
+                    ? 'border-neon bg-neon/5' 
+                    : 'border-border hover:border-neon/50'
+                }`}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+              >
+                <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <div className="space-y-2">
+                  <p className="text-lg font-medium">
+                    Arraste e solte o arquivo aqui
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    ou clique para selecionar
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Formatos suportados: PDF, TXT, DOC, DOCX
+                  </p>
+                </div>
+                <Input
+                  type="file"
+                  accept=".pdf,.txt,.doc,.docx"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <Label 
+                  htmlFor="file-upload" 
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mt-4 cursor-pointer"
+                >
+                  Selecionar Arquivo
+                </Label>
+              </div>
+            ) : (
+              <div className="border border-border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <File className="h-8 w-8 text-neon" />
+                    <div>
+                      <p className="font-medium">{selectedFile.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatFileSize(selectedFile.size)}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={removeFile}
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div>
