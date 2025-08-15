@@ -61,9 +61,9 @@ const DashboardPage = () => {
                 className="mb-0"
               />
               <div className="flex items-center gap-3">
-                <Link to="/upload">
+                <Link to="/dashboard">
                   <Button className="bg-neon text-background hover:bg-neon/90 flex items-center gap-2">
-                    <Utensils className="h-4 w-4" /> Analisar Refeição
+                    <Utensils className="h-4 w-4" /> Registrar Dieta
                   </Button>
                 </Link>
                 <Link to="/profile">

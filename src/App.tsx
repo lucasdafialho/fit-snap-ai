@@ -8,7 +8,6 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import Index from "./pages/Index";
-import UploadPage from "./pages/UploadPage";
 import AdjustmentPage from "./pages/AdjustmentPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -46,7 +45,6 @@ const App = () => (
           <Navbar />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/upload" element={<UploadPage />} />
             <Route path="/adjust" element={<AdjustmentPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route 

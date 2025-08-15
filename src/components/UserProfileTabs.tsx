@@ -2,10 +2,9 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
-import { CircleUser, Settings, ChartPieIcon, SlidersHorizontal, MessageSquareText } from "lucide-react";
+import { CircleUser, Settings, SlidersHorizontal, MessageSquareText } from "lucide-react";
 import { Button } from "./ui/button";
 import { UserProfileForm } from "./UserProfileForm";
-import { DietSettings } from "./DietSettings";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -26,12 +25,9 @@ export function UserProfileTabs({ className }: UserProfileTabsProps) {
       onValueChange={setActiveTab}
       className={cn("w-full", className)}
     >
-      <TabsList className="grid grid-cols-5 w-full mb-8">
+      <TabsList className="grid grid-cols-4 w-full mb-8">
         <TabsTrigger value="profile" className="flex items-center gap-2">
           <CircleUser className="h-4 w-4" /> Profile
-        </TabsTrigger>
-        <TabsTrigger value="diet" className="flex items-center gap-2">
-          <ChartPieIcon className="h-4 w-4" /> Diet Goals
         </TabsTrigger>
         <TabsTrigger value="preferences" className="flex items-center gap-2">
           <SlidersHorizontal className="h-4 w-4" /> Preferences
@@ -52,10 +48,6 @@ export function UserProfileTabs({ className }: UserProfileTabsProps) {
       >
         <TabsContent value="profile">
           <UserProfileForm onSave={handleSaveChanges} />
-        </TabsContent>
-        
-        <TabsContent value="diet">
-          <DietSettings onSave={handleSaveChanges} />
         </TabsContent>
         
         <TabsContent value="preferences">

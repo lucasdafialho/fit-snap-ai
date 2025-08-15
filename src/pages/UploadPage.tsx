@@ -118,8 +118,8 @@ const UploadPage = () => {
     <PageLayout>
       <div className="container mx-auto px-4 flex flex-col items-center">
         <SectionHeading
-          title="Analyze Your Meal"
-          subtitle="Take a picture or upload an image of your food for AI nutritional analysis"
+          title="Assess Your Meal"
+          subtitle="Capture or upload an image of your food for AI nutritional feedback"
           align="center"
           className="mb-8 pt-6 md:pt-8 w-full max-w-4xl"
         />
@@ -159,7 +159,7 @@ const UploadPage = () => {
                           className="w-full bg-neon text-background hover:bg-neon/90 py-6 flex items-center justify-center gap-2 group"
                         >
                           <Sparkles className="h-5 w-5 group-hover:animate-pulse" />
-                          Analyze with AI
+                          Assess with AI
                         </Button>
                       )}
                     </div>
@@ -217,7 +217,7 @@ const UploadPage = () => {
                           className="w-full mt-2"
                           onClick={() => setActiveTab("camera")}
                         >
-                          Analyze a New Meal
+                          Assess a New Meal
                         </Button>
                       ) : (
                         <div className="bg-muted/30 rounded-xl p-4 mt-4 text-center">

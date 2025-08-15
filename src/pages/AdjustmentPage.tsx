@@ -29,9 +29,9 @@ const AdjustmentPage = () => {
     <PageLayout>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center mb-2">
-          <Link to="/upload">
+          <Link to="/dashboard">
             <Button variant="ghost" size="sm" className="gap-1">
-              <ArrowLeft className="h-4 w-4" /> Back to Analysis
+              <ArrowLeft className="h-4 w-4" /> Back to Assessment
             </Button>
           </Link>
         </div>
@@ -89,9 +89,9 @@ const AdjustmentPage = () => {
                     View Dashboard
                   </Button>
                 </Link>
-                <Link to="/upload">
+                <Link to="/dashboard">
                   <Button variant="outline">
-                    Analyze Another Meal
+                    Registrar outra dieta
                   </Button>
                 </Link>
               </div>

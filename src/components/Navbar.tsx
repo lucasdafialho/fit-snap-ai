@@ -20,7 +20,6 @@ export function Navbar() {
   
   const navItems = [
     { label: 'Home', path: '/' },
-    { label: 'Analyze', path: '/upload' },
     { label: 'Dashboard', path: '/dashboard' },
   ];
   

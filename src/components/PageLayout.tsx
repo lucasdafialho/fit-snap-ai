@@ -1,7 +1,5 @@
 
 import { ReactNode } from "react";
-import { Navbar } from "./Navbar";
-import { Footer } from "./Footer";
 import { cn } from "@/lib/utils";
 
 interface PageLayoutProps {
@@ -19,7 +17,6 @@ export function PageLayout({
 }: PageLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <main className={cn(
         "flex-grow pt-16", 
         !withoutPadding && "py-8",
@@ -31,7 +28,6 @@ export function PageLayout({
           {children}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export function Footer() {
               FitSnap
             </span>
             <p className="mt-2 text-sm text-muted-foreground">
-              Snap. Analyze. Adjust. Live Light with AI.
+              Snap. Adjust. Live Light with AI.
             </p>
           </div>
           
@@ -24,11 +24,6 @@ export function Footer() {
               <li>
                 <Link to="/" className="text-muted-foreground hover:text-neon transition-colors duration-200">
                   Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/upload" className="text-muted-foreground hover:text-neon transition-colors duration-200">
-                  Analyze
                 </Link>
               </li>
               <li>
